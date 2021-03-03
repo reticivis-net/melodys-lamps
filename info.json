@@ -1,0 +1,9 @@
+{
+    "name": "melodys-lamps",
+    "version": "0.0.1",
+    "title": "Melody's Lamps",
+    "author": "Melody",
+    "factorio_version": "1.1",
+    "dependencies": ["base >= 1.1"],
+    "description": "ooga chaka ooga chaka ooga chaka"
+  }

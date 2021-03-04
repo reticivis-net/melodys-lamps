@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Color Compute",
+            "type": "python",
+            "request": "launch",
+            "program": "colorcompute.py",
+            "console": "integratedTerminal"
+        },
+        {
             "type": "factoriomod",
             "request": "launch",
             "name": "Factorio Mod Debug",

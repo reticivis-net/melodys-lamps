@@ -31,5 +31,6 @@
     /* Adjust these to match your Factorio install path */
     "C:/Program Files (x86)/Steam/steamapps/common/Factorio/data/": true, /* for __base__ and __core__ */
     "C:/Program Files (x86)/Steam/steamapps/common/Factorio/data/core/lualib": true, /* some basic libs can be required directly*/
-  }
+  },
+  "python.pythonPath": "C:\\Users\\minec\\.PyCharm2018.3\\caption bot\\Scripts\\python.exe"
 }

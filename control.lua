@@ -1,3 +1,13 @@
+local function addtotable(table, factor)
+    for i, item in pairs(table) do
+        if type(item) == "table" then
+            table[i] = addtotable(item, factor)
+        elseif type(item) == "number" then
+            table[i] = item + factor
+        end
+    end
+    return table
+end
 local alwaysoncond = {
     condition = {
         comparator = "≥",
@@ -17,7 +27,14 @@ local function monitored_place(entity)
         {entity = entity, lightsprite = nil, lightdraw = nil}
 end
 local function monitored_remove(entity)
-    global.monitored_entities[entity.unit_number] = nil
+    if entity.lightsprite then
+        rendering.destroy(entity.lightsprite)
+        rendering.destroy(entity.lightdraw)
+    end
+    if global.monitored_entities[entity.unit_number] ~= nil then
+        global.monitored_entities[entity.unit_number] = nil
+    end
+
 end
 -- lifted straight from nixie source lol!
 local filters = {}
@@ -27,19 +44,27 @@ for name in pairs(entites_to_monitor) do
     filters[#filters + 1] = {filter = "ghost_name", name = name}
     names[#names + 1] = name
 end
-script.on_init(function() global.monitored_entities = {} end)
+script.on_init(function() global.monitored_entities = {}; end)
 -- script.on_load(function() force_scan() end)
 local function onPlaceEntity(entity)
     local num = entites_to_monitor[entity.name]
     if num then -- i guess this is lua's "if item in"
         monitored_place(entity)
     end
+    -- if entity.name == "sun-lamp" then
+    --     entity.surface.brightness_visual_weights =
+    --         addtotable(entity.surface.brightness_visual_weights, 0.5)
+    -- end
 end
 local function onRemoveEntity(entity)
     local num = entites_to_monitor[entity.name]
     if num then -- i guess this is lua's "if item in"
         monitored_remove(entity)
     end
+    -- if entity.name == "sun-lamp" then
+    --     entity.surface.brightness_visual_weights =
+    --         addtotable(entity.surface.brightness_visual_weights, -0.5)
+    -- end
 end
 local function get_signals_filtered(entity, signal)
     return entity.get_merged_signal(signal)
@@ -112,16 +137,40 @@ local function onTick()
                 end
             end
         else
-            if mentity.lightsprite then
-                rendering.destroy(mentity.lightsprite)
-                rendering.destroy(mentity.lightdraw)
-            end
-            global.monitored_entities[id] = nil
+
+            monitored_remove(mentity)
+            -- global.monitored_entities[id] = nil
         end
 
     end
 end
+local function handle_sun_explosion(params)
+    if params.effect_id == "sun-lamp-death" then
+        if params.target_entity.status == defines.entity_status.working then -- needs power to explode
+            params.target_entity.surface.create_entity {
+                name = "atomic-rocket",
+                position = params.target_entity.position,
+                target = params.target_entity,
+                source = params.source_entity,
+                speed = 1,
+                max_range = 1
+            }
+        end
+    end
+end
+local function RegisterPicker()
+    if remote.interfaces["picker"] and
+        remote.interfaces["picker"]["dolly_moved_entity_id"] then
+        script.on_event(remote.call("picker", "dolly_moved_entity_id"),
+                        function(event)
+            onRemoveEntity(event.moved_entity)
+            onPlaceEntity(event.moved_entity)
+        end)
+    end
+end
+script.on_load(function() RegisterPicker() end)
 script.on_event(defines.events.on_tick, onTick)
+script.on_event(defines.events.on_script_trigger_effect, handle_sun_explosion)
 script.on_event(defines.events.on_built_entity,
                 function(event) onPlaceEntity(event.created_entity) end, filters)
 script.on_event(defines.events.on_robot_built_entity,

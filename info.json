@@ -1,9 +1,11 @@
 {
-    "name": "melodys-lamps",
-    "version": "0.0.1",
-    "title": "Melody's Lamps",
-    "author": "Melody",
-    "factorio_version": "1.1",
-    "dependencies": ["base >= 1.1"],
-    "description": "ooga chaka ooga chaka ooga chaka"
-  }
+  "name": "melodys-lamps",
+  "version": "1.0.0",
+  "title": "Melody's Lamps",
+  "author": "Melody",
+  "factorio_version": "1.1",
+  "dependencies": [
+    "base >= 1.1"
+  ],
+  "description": "Adds an RGB lamp that can be set to any color with signals and 2 bigger lamps to light up huge areas."
+}

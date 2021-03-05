@@ -122,7 +122,7 @@ sunlamp.name = "sun-lamp"
 sunlamp.icon = "__melodys-lamps__/assets/sun-lamp/sun-lamp.png"
 sunlamp.minable.result = "sun-lamp"
 -- sunlamp.always_on = true
-local sunlampsize = 1000
+local sunlampsize = 1000 -- so the light render distance is "clamped to 160" so i'll need to change the behavior to be global at SOME point
 sunlamp.light = {type = "basic", intensity = 1, size = sunlampsize}
 sunlamp.glow_size = sunlampsize / 2
 
